@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">IMUstreamGlass</string>
+    <string name="title_activity_main">IMUstream</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="network_start">Tap to start UDP</string>
+    <string name="network_on">Sending NOW...\n Tap to Stop\n</string>
+
+    <string name="write_start">Tap to write log</string>
+    <string name="write_on">Writing NOW...\n Tap to Stop\n</string>
+
+    <string name="to_home">Tap to return home</string>
+    <string name="close_app">Tap to terminate all</string>
+
+
+</resources>

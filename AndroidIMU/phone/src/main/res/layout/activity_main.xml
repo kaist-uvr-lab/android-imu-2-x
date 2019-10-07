@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="kr.ac.kaist.arrc.imustreamphone.MainActivity">
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TargetIP"
+
+        app:layout_constraintBottom_toTopOf="@+id/tv2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="MyIP"
+        android:textStyle="bold"
+
+        app:layout_constraintTop_toBottomOf="@+id/tv1"
+        app:layout_constraintBottom_toTopOf="@+id/sync_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        app:layout_constraintRight_toRightOf="parent"
+         />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sync_layout"
+
+
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/tv2"
+        app:layout_constraintBottom_toTopOf="@+id/device_info_txt"
+        >
+
+        <TextView
+            android:id="@+id/sync_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Device Sync: "
+            />
+
+        <Button
+            android:id="@+id/syncServer_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Server"
+
+            />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/device_info_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device Info"
+        android:textSize="18sp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sync_layout"
+        app:layout_constraintBottom_toTopOf="@+id/exp_layout"/>
+
+    <LinearLayout
+        android:id="@+id/exp_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="#AAA"
+
+        app:layout_constraintTop_toBottomOf="@+id/device_info_txt"
+        app:layout_constraintBottom_toTopOf="@+id/class_result_linear">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "[Experiment Control]"
+
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/expbtn_linear"
+
+
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintTop_toBottomOf="@+id/device_info_txt"
+            app:layout_constraintBottom_toTopOf="@+id/class_result_linear" >
+
+            <Button
+                android:id="@+id/expstart_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="START" />
+
+            <Button
+                android:id="@+id/expresume_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RESUME" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/exp_leftdetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Passed:xxmin (y/tot trials)"/>
+
+        <TextView
+            android:id="@+id/exp_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="20sp"
+            android:text="Press 'Start' to start Exp."/>
+        <TextView
+            android:id="@+id/exp_targetgesture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="20sp"
+            android:text="Target Gesture: null"
+            />
+
+
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/class_result_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:gravity="center"
+
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exp_layout">
+
+        <ImageView
+            android:id="@+id/class_result_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="200dp"
+            android:maxHeight="200dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/gesture_null" />
+
+
+
+
+        <TextView
+            android:id="@+id/class_result_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="null"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/class_result_confirm_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:visibility="invisible"/>
+            <Button
+                android:id="@+id/class_result_dismiss_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dismiss"
+                android:visibility="invisible"/>
+            <Button
+                android:id="@+id/class_result_retry_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retry"
+                android:visibility="invisible"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+
+</android.support.constraint.ConstraintLayout>

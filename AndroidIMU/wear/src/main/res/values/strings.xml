@@ -1,0 +1,20 @@
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:windowSwipeToDismiss">false</item>
+    </style>
+    <string name="app_name">IMUstream</string>
+
+
+    <string name="network_start">Connect</string>
+    <string name="network_on">Sending&#8230;</string>
+
+    <string name="write_start">Write File</string>
+    <string name="write_on">Writing&#8230;</string>
+
+    <string name="stop_all">Stop ALL</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+</resources>
