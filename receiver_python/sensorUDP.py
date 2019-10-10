@@ -108,6 +108,7 @@ class imus_UDP(threading.Thread):
         if new_id != None:
             print("ADD new data incoming: ", new_id)
             self.online_save_file[new_id] = open(self.file_prefix+self.participant_name+"_"+new_id+".csv","w") 
+            print("file_created: "+self.file_prefix+self.participant_name+"_"+new_id+".csv")
             if not new_id == "127.0.0.1":
                 self.datas[new_id] = np.empty((self.w_size, self.numData))
                 self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,ROTx,ROTy,ROTz,ROTw,DeviceTime\n")
@@ -187,12 +188,12 @@ class imus_UDP(threading.Thread):
                     data, address = self.serverSocket.recvfrom(2048)
                     
                     swap_data = bytearray(data)
-#                    float_len = int(len(data)/4)
                     swap_data.reverse()
                     
                     DATA_NUM = struct.unpack("i", swap_data[-4:])[0]
+                    
                     for i in range(DATA_NUM):
-                        this_data = swap_data[-(48*i+52):-(48*i+4)]
+                        this_data = swap_data[-(52*(i+1)):-(52*i+4)]
                         float_list = struct.unpack(self.dataFormat, this_data)
                         
                         float_arr = np.array(float_list+(current_milli_time(),))
@@ -251,7 +252,7 @@ if __name__ == "__main__":
 #            print(one, ": ", imu_get.datas[one][-1,:])
         
         try:
-            data_chunk = imu_get.getDATA(w_size=500)["192.168.0.12"]
+            data_chunk = imu_get.getDATA(w_size=500)["192.168.0.67"]
             one_row = imu_get.getLastData()
         
             count = np.count_nonzero(data_chunk[:,0]>last_t)
