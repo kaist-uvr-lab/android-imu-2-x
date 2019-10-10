@@ -128,15 +128,15 @@ public class SendWriteService extends Service implements SensorEventListener {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                 CONSTANTS.SENSOR_DELAY);
-//        sensorManager.registerListener(this,
-//                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-//                CONSTANTS.SENSOR_DELAY);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                CONSTANTS.SENSOR_DELAY);
 //        sensorManager.registerListener(this,
 //                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
 //                CONSTANTS.SENSOR_DELAY);
-//        sensorManager.registerListener(this,
-//                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
-//                CONSTANTS.SENSOR_DELAY);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+                CONSTANTS.SENSOR_DELAY);
         // store float values as byte array
         msgBuffer = ByteBuffer.allocate(CONSTANTS.BYTE_SIZE);
         bufferQueue = new ArrayBlockingQueue(CONSTANTS.QUEUE_SIZE);
@@ -341,6 +341,8 @@ public class SendWriteService extends Service implements SensorEventListener {
         event.timestamp = myTimeReference +
                 Math.round((event.timestamp - sensorTimeReference) / 1000000.0);
 //        Log.d("time", event.timestamp + "|" + System.currentTimeMillis());
+//        Log.d(TAG, "SENSOR TYPE: "+event.sensor.getType());
+
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 
             if((msgSending||msgWriting||(syncInfo==2)) && ( (event.timestamp - lastSensorTime) > CONSTANTS.SENSOR_DELAY)){
@@ -354,6 +356,11 @@ public class SendWriteService extends Service implements SensorEventListener {
                     msgBuffer.putFloat(4, event.values[1]);
                     msgBuffer.putFloat(8, event.values[2]);
                     msgBuffer.putLong(40, event.timestamp);
+
+//                    msgBuffer.putFloat(0, 0);
+//                    msgBuffer.putFloat(4, 4);
+//                    msgBuffer.putFloat(8, 8);
+//                    msgBuffer.putLong(40, 40);
 
 //                    msgBuffer.putFloat(12, prev_x);
 //                    msgBuffer.putFloat(16, prev_y);
@@ -380,11 +387,15 @@ public class SendWriteService extends Service implements SensorEventListener {
                 }
 
             }
-        }else if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
+        }else if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION || event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
             if(msgSending||(syncInfo==2)) {
                 msgBuffer.putFloat(12, event.values[0]);
                 msgBuffer.putFloat(16, event.values[1]);
                 msgBuffer.putFloat(20, event.values[2]);
+
+//                msgBuffer.putFloat(12, 12);
+//                msgBuffer.putFloat(16, 16);
+//                msgBuffer.putFloat(20, 20);
             }
             if(msgWriting){
                 acc_str = df.format(event.values[0])+", "+df.format(event.values[1])+", "+df.format(event.values[2])+", ";
@@ -392,11 +403,17 @@ public class SendWriteService extends Service implements SensorEventListener {
 
 
         }else if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
+
             if(msgSending||(syncInfo==2)){
                 msgBuffer.putFloat(24, event.values[0]);
                 msgBuffer.putFloat(28, event.values[1]);
                 msgBuffer.putFloat(32, event.values[2]);
                 msgBuffer.putFloat(36, event.values[3]);
+
+//                msgBuffer.putFloat(24, 24);
+//                msgBuffer.putFloat(28, 28);
+//                msgBuffer.putFloat(32, 32);
+//                msgBuffer.putFloat(36, 36);
             }
             if(msgWriting){
                 rot_str = df.format(event.values[0])+", "+df.format(event.values[1])+", "+df.format(event.values[2])+", "+df.format(event.values[3])+", ";
