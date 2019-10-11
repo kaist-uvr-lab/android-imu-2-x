@@ -2,6 +2,8 @@ package kr.ac.kaist.arrc.imustreamwear;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -214,7 +216,10 @@ public class MainActivity extends WearableActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
 
+
         wakeLock.release();
+        unregisterReceiver(new WifiReceiver());
+
         super.onDestroy();
     }
 
@@ -224,7 +229,7 @@ public class MainActivity extends WearableActivity {
                 msgSending = true;
                 vib_tool.vibrateError();
 
-                startService();
+                startSendWriteService();
                 updateUI();
             }else{
                 Toast.makeText(getApplicationContext(), "LONG CLICK to STOP", Toast.LENGTH_SHORT).show();
@@ -294,7 +299,8 @@ public class MainActivity extends WearableActivity {
                 msgSending = false;
                 msgWriting = false;
 
-                startService(); // 서비스 종료
+//                startSendWriteService(); // 서비스 종료
+                stopSendWriteService();
                 updateUI();
                 Toast.makeText(getApplicationContext(), "Service Terminated", Toast.LENGTH_SHORT).show();
 
@@ -313,7 +319,7 @@ public class MainActivity extends WearableActivity {
             msgSending = false;
             msgWriting = false;
 
-            startService(); // 서비스 종료
+            startSendWriteService(); // 서비스 종료
 //            stopService(intent); // 서비스 종료
             updateUI();
 
@@ -326,7 +332,7 @@ public class MainActivity extends WearableActivity {
             /*if(!msgWriting){
                 msgWriting = true;
             }
-            startService();
+            startSendWriteService();
             updateUI();*/
 
             if(CONSTANTS.SENSOR_DELAY==8){
@@ -355,7 +361,7 @@ public class MainActivity extends WearableActivity {
                 this.NAME = values.NAME;
             }
 
-            startService();
+            startSendWriteService();
             updateUI();
         }
 
@@ -412,10 +418,13 @@ public class MainActivity extends WearableActivity {
         }
     }
 
-    private void startService(){
+    private void startSendWriteService(){
         Intent intent = new Intent(
                 getApplicationContext(),//현재제어권자
-                SendWriteService.class); // 이동할 컴포넌트
+                SendWriteWear.class); // 이동할 컴포넌트
+//        Intent intent = new Intent(
+//                getApplicationContext(),//현재제어권자
+//                SendWriteService.class); // 이동할 컴포넌트
         intent.putExtra("Send", msgSending);
         intent.putExtra("Write", msgWriting);
         intent.putExtra("Name", NAME);
@@ -425,6 +434,21 @@ public class MainActivity extends WearableActivity {
         startService(intent); // 서비스 시작
 
     }
+    private void stopSendWriteService(){
+        Intent intent = new Intent(
+                getApplicationContext(),//현재제어권자
+                SendWriteWear.class); // 이동할 컴포넌트
+
+//        Intent intent = new Intent(
+//                getApplicationContext(),//현재제어권자
+//                SendWriteService.class); // 이동할 컴포넌트
+
+        SocketComm.writeCurrentStatus(msgSending, msgWriting, NAME);
+
+        stopService(intent); // 서비스 시작
+
+    }
+
     private boolean isServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){

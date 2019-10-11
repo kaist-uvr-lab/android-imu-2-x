@@ -43,7 +43,7 @@ public class CONSTANTS {
      **/
 
     //sensor delay for SensorManager in mssec
-    public static int SENSOR_DELAY = 18;
+    public static int SENSOR_DELAY = 8;
 
 
     /**
@@ -51,7 +51,7 @@ public class CONSTANTS {
      * - Sensor manager doesn't give correct interval
      **/
 //    public static final int SENDING_INTERVAL = 50; //50Hz
-    public static int SENDING_INTERVAL = 50;
+    public static int SENDING_INTERVAL = 20;
 //    public static int SENDING_INTERVAL = SENSOR_DELAY - 1;    //100Hz
     public static int SENDING_INTERVAL_HALF = SENDING_INTERVAL / 2;    // for thread sleep in UDP socket part
 

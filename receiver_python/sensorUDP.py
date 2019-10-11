@@ -254,7 +254,10 @@ if __name__ == "__main__":
         
         try:
             data_chunk = imu_get.getDATA(w_size=500)
+        except:
+            print("none") 
             
+        if type(data_chunk) == dict:
             for key, val in data_chunk.items():
                 count = np.count_nonzero(val[:,0]>last_t)
             
@@ -262,8 +265,7 @@ if __name__ == "__main__":
             
             one_row = imu_get.getLastData()
             last_t = one_row[0]
-        except:
-            print("none") 
+        
         time.sleep(dt)
         
     imu_get.stopCollecting()

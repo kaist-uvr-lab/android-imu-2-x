@@ -1,5 +1,7 @@
 package kr.ac.kaist.arrc.imustreamlib;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +40,9 @@ import kr.ac.kaist.arrc.imustreamlib.network.NetUtils;
 
 public class SendWriteService extends Service implements SensorEventListener {
     final String TAG = "SendWriteService";
+
+    public final int FOREFROUND_ID = 011;
+    public final String NOTI_CHANNEL_ID = "SendWriteService";
 
     private int this_device_id = 0;
 
@@ -203,6 +208,11 @@ public class SendWriteService extends Service implements SensorEventListener {
 
         sendBroadcastMessage();
 
+        Intent notificationIntent = new Intent(this, SendWriteService.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+
 
     }
     @Override
@@ -253,9 +263,6 @@ public class SendWriteService extends Service implements SensorEventListener {
                 Log.d(TAG, "getFromServer executed");
             }
         }
-
-
-
 
 
 //        return super.onStartCommand(intent, flags, startId);
@@ -368,7 +375,6 @@ public class SendWriteService extends Service implements SensorEventListener {
 //                    prev_x = event.values[0]; prev_y = event.values[1]; prev_z = event.values[2];
 
                     msgBuffer.putInt(48, this_device_id);
-                    sendBroadcastMessage();
                     try {
                         if(bufferQueue.remainingCapacity() < 1){
                             bufferQueue.take();

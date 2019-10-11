@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">IMUstream</string>
 
+    <string name="notification_title">IMUstreamService</string>
+    <string name="notification_message">Start sending foreground service</string>
+
     <string name="opt_wild">Start Wild collection</string>
     <string name="opt_connect">Connect(Start sending)</string>
     <string name="opt_stop">Stop ALL</string>

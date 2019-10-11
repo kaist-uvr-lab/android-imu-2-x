@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kr.ac.kaist.arrc"
-    xmlns:tools="http://schemas.android.com/tools" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="kr.ac.kaist.arrc">
+
+    <uses-sdk tools:overrideLibrary="android.support.wear" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -10,20 +11,20 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-
-
-
-    <uses-sdk tools:overrideLibrary="android.support.wear"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_imustream"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_imustream_round"
         android:supportsRtl="true">
-        <!--android:theme="@android:style/Theme.Black">-->
-
+        <service
+            android:name=".imustreamwear.SendWriteWear"
+            android:enabled="true"
+            android:exported="true"></service>
+        <!-- android:theme="@android:style/Theme.Black"> -->
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
@@ -36,9 +37,9 @@
             android:value="true" />
 
         <activity
-            android:theme="@style/AppTheme"
             android:name=".imustreamwear.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,7 +47,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".imustreamlib.SendWriteService"></service>
+        <service android:name=".imustreamlib.SendWriteService" />
     </application>
 
 </manifest>

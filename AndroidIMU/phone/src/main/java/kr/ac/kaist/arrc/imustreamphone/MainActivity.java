@@ -2,6 +2,8 @@ package kr.ac.kaist.arrc.imustreamphone;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -75,7 +77,7 @@ import static kr.ac.kaist.arrc.imustreamlib.SendWriteService.LAST_CLASSRESULT;
 
 
 //public class MainActivity extends AppCompatActivity implements SensorEventListener {
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     private boolean EXP_TESTING = false;
     private SensorManager sensorManager;
@@ -310,7 +312,8 @@ public class MainActivity extends AppCompatActivity {
                 msgSending = false;
                 msgWriting = false;
 
-                startService(); // 서비스 종료
+//                startService(); // 서비스 종료
+                stopService();
                 updateUI();
 
                 Toast.makeText(getApplicationContext(),"All connections are terminated",Toast.LENGTH_LONG).show();
@@ -521,9 +524,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startService(){
+//        Intent intent = new Intent(
+//                getApplicationContext(),//현재제어권자
+//                SendWriteService.class); // 이동할 컴포넌트
         Intent intent = new Intent(
                 getApplicationContext(),//현재제어권자
-                SendWriteService.class); // 이동할 컴포넌트
+                SendWritePhone.class); // 이동할 컴포넌트
         intent.putExtra("Send", msgSending);
         intent.putExtra("Write", msgWriting);
         intent.putExtra("Name", NAME);
@@ -537,6 +543,19 @@ public class MainActivity extends AppCompatActivity {
         startService(intent); // 서비스 시작
 
     }
+    private void stopService(){
+
+        Intent intent = new Intent(
+                getApplicationContext(),//현재제어권자
+                SendWritePhone.class); // 이동할 컴포넌트
+
+
+        SocketComm.writeCurrentStatus(msgSending, msgWriting, NAME);
+
+        stopService(intent); // 서비스 시작
+
+    }
+
 
 
     private boolean isServiceRunning(String serv_name) {
