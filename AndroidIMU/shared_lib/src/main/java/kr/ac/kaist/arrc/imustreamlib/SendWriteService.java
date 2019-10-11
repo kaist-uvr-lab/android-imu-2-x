@@ -368,6 +368,7 @@ public class SendWriteService extends Service implements SensorEventListener {
 //                    prev_x = event.values[0]; prev_y = event.values[1]; prev_z = event.values[2];
 
                     msgBuffer.putInt(48, this_device_id);
+                    sendBroadcastMessage();
                     try {
                         if(bufferQueue.remainingCapacity() < 1){
                             bufferQueue.take();

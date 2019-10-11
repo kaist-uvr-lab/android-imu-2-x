@@ -169,14 +169,13 @@ class imus_UDP(threading.Thread):
 # #                filtered_datas[one_key] = self.datas[one_key][~np.isnan(self.datas[one_key]).all(axis=1)]
 #             return filtered_datas
 #==============================================================================
-    def startCollecting(self):
-        self.PAUSE_loop = False
-        self.resetDATAs()
-    def stopCollecting(self):
-        self.PAUSE_loop = True
-            
+
+           
         
     def run(self):
+        self.PAUSE_loop = False
+        self.STOP_loop = False
+        
         while True:
             
             if self.STOP_loop:
@@ -245,22 +244,27 @@ if __name__ == "__main__":
     imu_get.start()
     
     
-    imu_get.startCollecting()
+#    imu_get.startCollecting()
+    
+    dt = 1
     last_t = 0
     while True:
 #        for one in imu_get.datas.keys():
 #            print(one, ": ", imu_get.datas[one][-1,:])
         
         try:
-            data_chunk = imu_get.getDATA(w_size=500)["192.168.0.67"]
+            data_chunk = imu_get.getDATA(w_size=500)
+            
+            for key, val in data_chunk.items():
+                count = np.count_nonzero(val[:,0]>last_t)
+            
+                print("from:{} | {}sec count: {}".format(key, dt, count))
+            
             one_row = imu_get.getLastData()
-        
-            count = np.count_nonzero(data_chunk[:,0]>last_t)
             last_t = one_row[0]
-            print("count: ",count)
         except:
             print("none") 
-        time.sleep(1)
+        time.sleep(dt)
         
     imu_get.stopCollecting()
     data = imu_get.getDATA()

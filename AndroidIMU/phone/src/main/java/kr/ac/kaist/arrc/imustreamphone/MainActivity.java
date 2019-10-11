@@ -87,31 +87,6 @@ public class MainActivity extends AppCompatActivity {
     private long last_error_time = 0;
     private boolean disconnected = false;
 
-    private LinearLayout linear_exp;
-    private Button btn_expstart, btn_expresume, btn_exppause;
-    private TextView tv_exp_state, tv_exp_targetgesture, tv_exp_leftdetails;
-    private int exp_currentstatus = -1;
-    private int exp_currenttarget = 5;
-    private String exp_currentleftdetails = "Notyet...";
-
-    private Timer wild_timer;
-    private boolean wild_running = false;
-    private long wild_start_time = 0;
-    private long wild_last_checked_time = 0;
-    private int wild_last_gesture_id = 4;
-    private int wild_gesture_trial_count = 0;
-    private String wild_info_file_path;
-    private Timer wild_noti_timer;
-    private long wild_noti_start;
-    private boolean wild_noti_ing = false;
-    private int wild_noti_duration = 10000;
-
-    private ImageView classResult_img;
-    private TextView classResult_txt;
-    private Button classResult_confirm, classResult_dismiss, classResult_retry;
-    int showing_gesture = -1;
-    private String[] classes = {"0.Head|&Leg|", "1.Hand-&Head|", "2.Hand-&Leg-", "3.Head-&Leg-", "4.Hand-&Head-", "-1.null"};
-
     private VibratorTool vib_tool;
 
     private String NAME = "jyS6";
@@ -188,23 +163,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean  onLongClick(View v) {
                 if (syncInfo == 2) {
-                    // wild study was running
-                    if (exp_currentstatus == 200) {
-
-                        Utils.appendStringToThisFile(wild_info_file_path, ""+System.currentTimeMillis()+",-999,terminated\n");
-                        Utils.appendStringToThisFile(wild_info_file_path, ""+System.currentTimeMillis()+",-888,"+(System.currentTimeMillis()-wild_start_time)+"\n"); // passed time
-                        Utils.appendStringToThisFile(wild_info_file_path, ""+System.currentTimeMillis()+",-777," + wild_gesture_trial_count+"\n"); // total trial
-
-                        exp_currentstatus = -1;
-                    }
 
                     syncInfo = 0;
                     classifying = false;
-
-
-
-
-
                 }
 
                 startService();
@@ -235,46 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
         device_info = (TextView) findViewById(R.id.device_info_txt);
 
-        // Initialize for SelfSync Result
-        classResult_img = (ImageView) findViewById(R.id.class_result_img);
-        classResult_txt = (TextView) findViewById(R.id.class_result_txt);
-        classResult_confirm = (Button) findViewById(R.id.class_result_confirm_btn);
-        classResult_dismiss = (Button) findViewById(R.id.class_result_dismiss_btn);
-        classResult_retry = (Button) findViewById(R.id.class_result_retry_btn);
-        if (EXP_TESTING) {
-            classResult_confirm.setVisibility(View.VISIBLE);
-            classResult_dismiss.setVisibility(View.VISIBLE);
-            classResult_retry.setVisibility(View.VISIBLE);
 
-            classResult_confirm.setOnClickListener( new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    sendBroadcastMessage(2,"222");
-
-
-                }
-            });
-            classResult_dismiss.setOnClickListener( new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    sendBroadcastMessage(4,"444");
-
-
-                }
-            });
-            classResult_retry.setOnClickListener( new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    sendBroadcastMessage(1,"111");
-
-
-                }
-            });
-
-        }
 
         // Get data from SendWriteService
         LocalBroadcastManager.getInstance(this).registerReceiver(
@@ -307,35 +229,11 @@ public class MainActivity extends AppCompatActivity {
                             //reset last_error_time when connection recovered
                             last_error_time = System.currentTimeMillis();
                         }
-
-                        // send feedback to glass when error occurs
-                        if(exp_currentstatus!=200 && result!=5 && !isServiceRunning("edu.gatech.cc.ubicomp.synclib.experiment.ExpScheduleService")){
-                            new SocketOnetimeSend().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, CONSTANTS.HEAD_IP, 100 + result);
-
-                            Log.d(TAG, "sending msg:"+(100 + result));
-                        }
-                        else if (exp_currentstatus == 200 && wild_noti_ing && result==wild_last_gesture_id) {
-                            wild_noti_timer.cancel();
-                            wild_noti_ing = false;
-                            Utils.appendStringToThisFile(wild_info_file_path, ""+System.currentTimeMillis()+","+wild_last_gesture_id+",succeed\n");
-                        }
-
-                        updateSelfSyncResult(result);
                         updateUI();
 
                     }
                 }, new IntentFilter(SendWriteService.ACTION_CLASS)
         );
-
-
-        linear_exp = (LinearLayout) findViewById(R.id.exp_layout);
-
-
-
-        tv_exp_state = (TextView) findViewById(R.id.exp_state);
-        tv_exp_targetgesture = (TextView) findViewById(R.id.exp_targetgesture);
-        tv_exp_leftdetails = (TextView) findViewById(R.id.exp_leftdetails);
-
 
 
         int PERMISSION_ALL = 1;
@@ -618,135 +516,9 @@ public class MainActivity extends AppCompatActivity {
             device_info.setText("");
         }
 
-        updateExpUI();
     }
 
-    private void updateExpUI() {
-        tv_exp_leftdetails.setText(exp_currentleftdetails);
 
-        // exp_currentstatus -1:default 0:task idle 1:task trial 100:task done
-        if (exp_currentstatus == -1) {
-            linear_exp.setBackgroundColor(Color.rgb(80,80,80));
-            if ( (syncInfo==2 && !device_info_str.contains("error") && !device_info_str.equals("")) ||
-                    EXP_TESTING){
-                btn_expstart.setEnabled(true);
-                btn_expresume.setEnabled(true);
-
-                tv_exp_state.setText("Press'Start' to start Exp");
-            }else{
-                btn_expstart.setEnabled(false);
-                btn_expresume.setEnabled(false);
-
-                tv_exp_state.setText("Activate devicesync before 'Start' Exp");
-
-            }
-        } else if (exp_currentstatus == 0) {
-            // idle(False/Positive test)
-            linear_exp.setBackgroundColor(Color.rgb(200, 200, 200));
-
-            btn_expstart.setEnabled(false);
-            btn_expresume.setEnabled(false);
-
-            tv_exp_state.setText("Wait for next trial");
-
-            tv1.setTextColor(Color.rgb(50,50,50));
-            tv_exp_targetgesture.setText("next target=" + classes[exp_currenttarget]);
-
-        } else if (exp_currentstatus == 1) {
-            // True/Positive trial
-            linear_exp.setBackgroundColor(Color.rgb(80,200,80));
-
-            btn_expstart.setEnabled(false);
-            btn_expresume.setEnabled(false);
-
-
-            tv_exp_state.setTextColor(Color.rgb(50,50,150));
-            tv_exp_state.setText("!!!Do below gesture now!!!");
-
-        } else if (exp_currentstatus == 100) {
-            // Exp didnt start yet
-            linear_exp.setBackgroundColor(Color.rgb(80,80,80));
-            tv_exp_state.setText("Finish");
-            tv_exp_state.setText("All done...");
-
-            btn_expstart.setEnabled(false);
-            btn_expresume.setEnabled(false);
-
-        } else if (exp_currentstatus == 200) {
-            // Wild data collection
-
-            linear_exp.setBackgroundColor(Color.rgb(50,100,50));
-            tv_exp_state.setText("Wild data collecting");
-
-            double passed_min = (System.currentTimeMillis()-wild_start_time)/(1000*60.0);
-            double passed_sec = ((System.currentTimeMillis()-wild_start_time)%(1000*60.0))/1000;
-            String left_str = "Passed:"+(int)(passed_min)+"min"+(int)passed_sec+" (Trials: "+wild_gesture_trial_count+")" ;
-            tv_exp_leftdetails.setText(left_str);
-
-            btn_expstart.setVisibility(View.GONE);
-            btn_expresume.setVisibility(View.GONE);
-
-        }
-
-
-    }
-    private void updateSelfSyncResult(String gesture_str){
-        switch(gesture_str) {
-
-            case "0.Head|&Leg|" : // "Head|&Leg|"
-                updateSelfSyncResult(0);
-                break;
-            case "1.Hand-&Head|": // "Hand-&Head|"
-                updateSelfSyncResult(1);
-                break;
-            case "2.Hand-&Leg-": // "Hand-&Leg-"
-                updateSelfSyncResult(2);
-                break;
-            case "3.Head-&Leg-": // "Head-&Leg-"
-                updateSelfSyncResult(3);
-                break;
-            case "4.Hand-&Head-": // "Hand-&Head-"
-                updateSelfSyncResult(4);
-                break;
-
-            default : // null
-                updateSelfSyncResult(-1);
-                // Statements
-        }
-
-    }
-
-    private void updateSelfSyncResult(int gesture_num){
-        switch(gesture_num) {
-
-            case 0 : // "Head|&Leg|"
-                classResult_img.setImageResource(R.drawable.gesture_0);
-                classResult_txt.setText("Head|&Leg|");
-                break;
-            case 1 : // "Hand-&Head|"
-                classResult_img.setImageResource(R.drawable.gesture_1);
-                classResult_txt.setText("Hand-&Head|");
-                break;
-            case 2 : // "Hand-&Leg-"
-                classResult_img.setImageResource(R.drawable.gesture_2);
-                classResult_txt.setText("Hand-&Leg-");
-                break;
-            case 3 : // "Head-&Leg-"
-                classResult_img.setImageResource(R.drawable.gesture_3);
-                classResult_txt.setText("Head-&Leg-");
-                break;
-            case 4 : // "Hand-&Head-"
-                classResult_img.setImageResource(R.drawable.gesture_4);
-                classResult_txt.setText("Hand-&Head-");
-                break;
-
-            default : // null
-                classResult_img.setImageResource(R.drawable.gesture_null);
-                classResult_txt.setText("null");
-                // Statements
-        }
-
-    }
 
     private void startService(){
         Intent intent = new Intent(
@@ -758,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("Sync", syncInfo);
         intent.putExtra("Classify", classifying);
 
-        intent.putExtra("ToClient", showing_gesture);
+//        intent.putExtra("ToClient", showing_gesture);
 
         SocketComm.writeCurrentStatus(msgSending, msgWriting, NAME);
 
