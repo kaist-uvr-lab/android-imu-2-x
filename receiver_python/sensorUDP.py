@@ -20,8 +20,10 @@ import pandas as pd
 class imus_UDP(threading.Thread):
     def __init__(self, Port = 12562, w_size=100*60):
         threading.Thread.__init__(self)
-        
+
+        # keep empty to get all incoming packet
         self.IP = ""
+
         self.Port = Port
         
         self.PAUSE_loop = True
@@ -86,8 +88,8 @@ class imus_UDP(threading.Thread):
         self.queue.put(whole_data)
         
     
-    def setLocalIP(self):
-        self.IP = socket.gethostbyname(socket.gethostname())
+    # def setLocalIP(self):
+    #     self.IP = socket.gethostbyname(socket.gethostname())
 
     def setIP_Port(self, IP, Port):
         self.IP = IP
