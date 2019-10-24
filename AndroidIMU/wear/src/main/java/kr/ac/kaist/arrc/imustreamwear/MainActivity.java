@@ -2,8 +2,6 @@ package kr.ac.kaist.arrc.imustreamwear;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,7 +39,6 @@ import kr.ac.kaist.arrc.R;
 import kr.ac.kaist.arrc.imustreamlib.CONSTANTS;
 import kr.ac.kaist.arrc.imustreamlib.SocketComm;
 import kr.ac.kaist.arrc.imustreamlib.ReturningValues;
-import kr.ac.kaist.arrc.imustreamlib.SendWriteService;
 import kr.ac.kaist.arrc.imustreamlib.VibratorTool;
 import kr.ac.kaist.arrc.imustreamlib.network.NetUtils;
 import kr.ac.kaist.arrc.imustreamlib.network.WifiReceiver;
@@ -53,7 +50,7 @@ public class MainActivity extends WearableActivity {
 
 
     private TextView tv_targetip, tv_deviceinfo;
-    Button btn_startstop, btn_stopall, btn_freqchange;
+    Button btn_startstop, btn_stopall, btn_write, btn_freqchange;
 
     private VibratorTool vib_tool;
 
@@ -114,11 +111,15 @@ public class MainActivity extends WearableActivity {
         vib_tool = new VibratorTool((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
 
         btn_stopall = (Button) findViewById(R.id.btn_stopall);
-        btn_stopall.setOnClickListener(btn2ClickListener);
+        btn_stopall.setOnClickListener(btnStopClickListener);
         btn_stopall.setVisibility(View.GONE);
 
+        btn_write = (Button) findViewById(R.id.btn_write);
+        btn_write.setOnClickListener(btnWriteClickListener );
+//        btn_write.setVisibility(View.GONE);
+
         btn_freqchange = (Button) findViewById(R.id.btn3);
-        btn_freqchange.setOnClickListener(btn3ClickListener);
+        btn_freqchange.setOnClickListener(btnFreqClickListener);
         btn_freqchange.setVisibility(View.GONE);
 
         // Enables Always-on
@@ -314,7 +315,7 @@ public class MainActivity extends WearableActivity {
         }
     };
 
-    Button.OnClickListener btn2ClickListener = new Button.OnClickListener() {
+    Button.OnClickListener btnStopClickListener = new Button.OnClickListener() {
         public void onClick(View arg0) {
             msgSending = false;
             msgWriting = false;
@@ -327,13 +328,20 @@ public class MainActivity extends WearableActivity {
         }
     };
 
-    Button.OnClickListener btn3ClickListener = new Button.OnClickListener() {
+    Button.OnClickListener btnWriteClickListener = new Button.OnClickListener() {
         public void onClick(View arg0) {
-            /*if(!msgWriting){
+            if(!msgWriting){
                 msgWriting = true;
             }
             startSendWriteService();
-            updateUI();*/
+            updateUI();
+
+            updateUI();
+
+        }
+    };
+    Button.OnClickListener btnFreqClickListener = new Button.OnClickListener() {
+        public void onClick(View arg0) {
 
             if(CONSTANTS.SENSOR_DELAY==8){
                 // switch to 200
@@ -400,11 +408,11 @@ public class MainActivity extends WearableActivity {
 
 
         if (msgWriting) {
-            btn_freqchange.setTextColor(Color.rgb(50,200,50));
-            btn_freqchange.setText(R.string.write_on);
+            btn_write.setTextColor(Color.rgb(50,200,50));
+            btn_write.setText(R.string.write_on);
         }else{
-            btn_freqchange.setTextColor(Color.rgb(255,255,255));
-            btn_freqchange.setText(R.string.write_start);
+            btn_write.setTextColor(Color.rgb(255,255,255));
+            btn_write.setText(R.string.write_start);
         }
 
         if(CONSTANTS.SENSOR_DELAY==4){

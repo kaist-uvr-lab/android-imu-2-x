@@ -45,28 +45,38 @@
             app:layout_constraintTop_toBottomOf="@id/tv_target"
 
             />
-
-        <Button
-            android:id="@+id/btn_startstop"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_target"
-            android:text="@string/network_start"
+            android:orientation="horizontal"
+            android:id="@+id/starting_btn_layout"
+            android:gravity="center"
 
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_deviceinfo" />
+            app:layout_constraintTop_toBottomOf="@id/tv_deviceinfo">
+            <Button
+                android:id="@+id/btn_startstop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/network_start" />
+            <Button
+                android:id="@+id/btn_write"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/write_start" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_stopall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_startstop"
             android:text="@string/stop_all"
 
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_startstop" />
+            app:layout_constraintTop_toBottomOf="@id/starting_btn_layout" />
 
         <Button
             android:id="@+id/btn3"
