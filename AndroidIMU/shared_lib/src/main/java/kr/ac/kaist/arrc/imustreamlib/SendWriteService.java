@@ -65,6 +65,12 @@ public class SendWriteService extends Service implements SensorEventListener {
     private float prev_x, prev_y, prev_z;
     private long time;
 
+    private float ACC_X, ACC_Y, ACC_Z;
+    private float GYRO_X, GYRO_Y, GYRO_Z;
+    private float ROT_X, ROT_Y, ROT_Z, ROT_W;
+    private long TIME;
+
+
     private String acc_str = "0, 0, 0,";
     private String rot_str = "0, 0, 0, 0,";
 
@@ -347,86 +353,73 @@ public class SendWriteService extends Service implements SensorEventListener {
         // set event timestamp to current time in milliseconds
         event.timestamp = myTimeReference +
                 Math.round((event.timestamp - sensorTimeReference) / 1000000.0);
-//        Log.d("time", event.timestamp + "|" + System.currentTimeMillis());
-//        Log.d(TAG, "SENSOR TYPE: "+event.sensor.getType());
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            GYRO_X = event.values[0];
+            GYRO_Y = event.values[1];
+            GYRO_Z = event.values[2];
+            TIME = event.timestamp;
+        }else if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION
+                || event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+            ACC_X = event.values[0];
+            ACC_Y = event.values[1];
+            ACC_Z = event.values[2];
+        }else if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR
+                || event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR){
+            ROT_X = event.values[0];
+            ROT_Y = event.values[1];
+            ROT_Z = event.values[2];
+            ROT_W = event.values[3];
+        }
 
-            if((msgSending||msgWriting||(syncInfo==2)) && ( (event.timestamp - lastSensorTime) > CONSTANTS.SENSOR_DELAY)){
-//                Log.d("sensorUpdated", ""+event.timestamp + "|" +lastSensorTime +"="+(event.timestamp - lastSensorTime));
-                lastSensorTime = event.timestamp;
 
+        if( (msgSending||msgWriting||(syncInfo==2))
+                && ( (event.timestamp - lastSensorTime) > CONSTANTS.SENSOR_DELAY)) {
+
+            lastSensorTime = event.timestamp;
+
+            // Sending UDP
+            if(msgSending||(syncInfo==2)) {
                 msgBuffer = ByteBuffer.allocate(CONSTANTS.BYTE_SIZE);
 
-                if(msgSending||(syncInfo==2)){
-                    msgBuffer.putFloat(0, event.values[0]);
-                    msgBuffer.putFloat(4, event.values[1]);
-                    msgBuffer.putFloat(8, event.values[2]);
-                    msgBuffer.putLong(40, event.timestamp);
+                msgBuffer.putFloat(0, GYRO_X);
+                msgBuffer.putFloat(4, GYRO_Y);
+                msgBuffer.putFloat(8, GYRO_Z);
 
-//                    msgBuffer.putFloat(0, 0);
-//                    msgBuffer.putFloat(4, 4);
-//                    msgBuffer.putFloat(8, 8);
-//                    msgBuffer.putLong(40, 40);
+                msgBuffer.putFloat(12, ACC_X);
+                msgBuffer.putFloat(16, ACC_Y);
+                msgBuffer.putFloat(20, ACC_Z);
 
-//                    msgBuffer.putFloat(12, prev_x);
-//                    msgBuffer.putFloat(16, prev_y);
-//                    msgBuffer.putFloat(20, prev_z);
-//                    prev_x = event.values[0]; prev_y = event.values[1]; prev_z = event.values[2];
+                msgBuffer.putFloat(24, ROT_X);
+                msgBuffer.putFloat(28, ROT_Y);
+                msgBuffer.putFloat(32, ROT_Z);
+                msgBuffer.putFloat(36, ROT_W);
 
-                    msgBuffer.putInt(48, this_device_id);
-                    try {
-                        if(bufferQueue.remainingCapacity() < 1){
-                            bufferQueue.take();
-                        }
-                        bufferQueue.put(msgBuffer);
-
-                    } catch (InterruptedException ex) {
-                        Log.d(TAG, "Error on put sensor values");
+                msgBuffer.putLong(40, TIME);
+                msgBuffer.putInt(48, this_device_id);
+                try {
+                    if (bufferQueue.remainingCapacity() < 1) {
+                        bufferQueue.take();
                     }
+                    bufferQueue.put(msgBuffer);
+                } catch (InterruptedException ex) {
+                    Log.d(TAG, "Error on put sensor values");
                 }
-                if(msgWriting){
-                    gyroData.add(   df.format(event.values[0])+", "+df.format(event.values[1])+", "+df.format(event.values[2])+", "
-                                    + acc_str
-                                    + rot_str
-                                    + event.timestamp);
-
-                }
-
             }
-        }else if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION || event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            if(msgSending||(syncInfo==2)) {
-                msgBuffer.putFloat(12, event.values[0]);
-                msgBuffer.putFloat(16, event.values[1]);
-                msgBuffer.putFloat(20, event.values[2]);
 
-//                msgBuffer.putFloat(12, 12);
-//                msgBuffer.putFloat(16, 16);
-//                msgBuffer.putFloat(20, 20);
-            }
+            // WRITING
             if(msgWriting){
-                acc_str = df.format(event.values[0])+", "+df.format(event.values[1])+", "+df.format(event.values[2])+", ";
+                gyroData.add(   df.format(GYRO_X)+", "+df.format(GYRO_Y)+", "+df.format(GYRO_Z)+", "
+                        + df.format(ACC_X)+", "+df.format(ACC_Y)+", "+df.format(ACC_Z)+", "
+                        + df.format(ROT_X)+", "+df.format(ROT_Y)+", "+df.format(ROT_Z)+", "+df.format(ROT_W)+", "
+                        + TIME);
+
             }
-
-
-        }else if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
-
-            if(msgSending||(syncInfo==2)){
-                msgBuffer.putFloat(24, event.values[0]);
-                msgBuffer.putFloat(28, event.values[1]);
-                msgBuffer.putFloat(32, event.values[2]);
-                msgBuffer.putFloat(36, event.values[3]);
-
-//                msgBuffer.putFloat(24, 24);
-//                msgBuffer.putFloat(28, 28);
-//                msgBuffer.putFloat(32, 32);
-//                msgBuffer.putFloat(36, 36);
-            }
-            if(msgWriting){
-                rot_str = df.format(event.values[0])+", "+df.format(event.values[1])+", "+df.format(event.values[2])+", "+df.format(event.values[3])+", ";
-            }
-
         }
+    }
+
+    private void putToBufferQueue(){
+
     }
 
     @Override
