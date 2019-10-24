@@ -22,7 +22,10 @@
             android:enabled="true"
             android:exported="true"></service>
 
-        <activity android:name=".imustreamphone.MainActivity">
+        <activity
+            android:name=".imustreamphone.MainActivity"
+            android:launchMode="singleTask">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
