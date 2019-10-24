@@ -145,8 +145,11 @@ public class SendWriteService extends Service implements SensorEventListener {
 //        sensorManager.registerListener(this,
 //                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
 //                CONSTANTS.SENSOR_DELAY);
+//        sensorManager.registerListener(this,
+//                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+//                CONSTANTS.SENSOR_DELAY);
         sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+                sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR),
                 CONSTANTS.SENSOR_DELAY);
         // store float values as byte array
         msgBuffer = ByteBuffer.allocate(CONSTANTS.BYTE_SIZE);
