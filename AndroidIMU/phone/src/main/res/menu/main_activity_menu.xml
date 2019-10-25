@@ -7,11 +7,12 @@
 
     <item  android:id="@+id/connect_opt"
         android:title="@string/opt_connect"/>
+    <item  android:id="@+id/write_opt"
+        android:title="@string/opt_write"/>
     <item  android:id="@+id/stop_opt"
         android:title="@string/opt_stop"/>
 
-    <item  android:id="@+id/write_opt"
-        android:title="@string/opt_write"/>
+
 
     <item  android:id="@+id/changeip_opt"
         android:title="@string/opt_change_target_ip"/>

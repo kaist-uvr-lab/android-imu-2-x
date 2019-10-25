@@ -6,9 +6,10 @@
     <string name="notification_message">Start sending foreground service</string>
 
     <string name="opt_wild">Start Wild collection</string>
-    <string name="opt_connect">Connect(Start sending)</string>
+    <string name="opt_connect">Send Stream(UDP)</string>
+    <string name="opt_write">Write Stream(CSV)</string>
     <string name="opt_stop">Stop ALL</string>
-    <string name="opt_write">Write File</string>
+
     <string name="opt_change_target_ip">Change Destination IP</string>
     <string name="opt_broadcast_ip">Broadcast IP to devices</string>
     <string name="opt_train">Train RDF</string>
