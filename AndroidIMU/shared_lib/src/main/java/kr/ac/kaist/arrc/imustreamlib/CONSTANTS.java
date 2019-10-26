@@ -10,8 +10,9 @@ public class CONSTANTS {
     // should put Phone(leg)'s hotspot ssid and passwd
     // ***IMPORTANT***CANNOT CHANGE ON APP
     public static boolean FORCE_WIFI = false;
-    public static String SSID = "nerf-this";
-    public static String PASSWD = "dvasong1212";
+    public static String SSID = "ssid";
+    public static String PASSWD = "xxxxxx";
+
 
 
     // target IP address
@@ -21,9 +22,9 @@ public class CONSTANTS {
 
     // each devices' IP address
     // DON'T NEED TO CHANGE (initialized by input packet)
-    public static String HEAD_IP = "192.168.43.106";
-    public static String HAND_IP = "192.168.43.191";
-    public static String LEG_IP = "this";
+    public static String GLASS_IP = "192.168.43.106";
+    public static String WEAR_IP = "192.168.43.191";
+    public static String PHONE_IP = "this";
 
     public static int DEVICE_ID = 0; //0:leg, 1:hand, 2:head
 
@@ -36,8 +37,6 @@ public class CONSTANTS {
     public static int DATA_PORT = 11563;
     public static int DATA_BYTE_SIZE = 48;
 
-    // msec
-    public static int CLASSIFIER_TERM = 100;
     /**
      * Android sensor manager registered Interval Value (ms)
      **/
@@ -73,11 +72,6 @@ public class CONSTANTS {
     // ERROR_NOTI_REPEAT: repeat alert in this period
     public static int ERROR_NOTI_TIME = 10000;
     public static int ERROR_NOTI_REPEAT = 2000;
-
-    // notification gap for wild study(asking trial to verify system)
-//    public static int WILD_TRIAL_GAP =  20000; // 10sec
-    public static int WILD_TRIAL_GAP = 30 * 60 * 1000; // 30min
-//    public static int WILD_TRIAL_GAP = 10 * 60 * 1000; // 10min
 
 
 }

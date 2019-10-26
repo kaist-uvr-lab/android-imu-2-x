@@ -264,7 +264,7 @@ public class SocketComm extends AsyncTask<Void, Void, Void> {
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
             data_stream = new IMUData(200);
-            data_stream.setIPs(CONSTANTS.HEAD_IP, CONSTANTS.HAND_IP, CONSTANTS.LEG_IP);
+            data_stream.setIPs(CONSTANTS.GLASS_IP, CONSTANTS.WEAR_IP, CONSTANTS.PHONE_IP);
 
             long this_last_time = 0;
             long this_time = 0;
@@ -323,23 +323,23 @@ public class SocketComm extends AsyncTask<Void, Void, Void> {
 
                 this_IP = receivePacket.getAddress().getHostAddress();
                 // Update IP address
-                if ((!this_IP.equals(CONSTANTS.HEAD_IP))
-                        && (!this_IP.equals(CONSTANTS.HAND_IP))
-                        && (!this_IP.equals(CONSTANTS.LEG_IP))) {
+                if ((!this_IP.equals(CONSTANTS.GLASS_IP))
+                        && (!this_IP.equals(CONSTANTS.WEAR_IP))
+                        && (!this_IP.equals(CONSTANTS.PHONE_IP))) {
 
                     switch (this_device_id) {
                         case 0:
-                            CONSTANTS.LEG_IP = this_IP;
+                            CONSTANTS.PHONE_IP = this_IP;
                             break;
                         case 1:
-                            CONSTANTS.HAND_IP = this_IP;
+                            CONSTANTS.WEAR_IP = this_IP;
                             break;
                         case 2:
-                            CONSTANTS.HEAD_IP = this_IP;
+                            CONSTANTS.GLASS_IP = this_IP;
                             break;
                     }
                     Log.d(TAG, this_IP+
-                            " reset IP: "+CONSTANTS.HEAD_IP+", "+CONSTANTS.HAND_IP+", "+CONSTANTS.LEG_IP);
+                            " reset IP: "+CONSTANTS.GLASS_IP +", "+CONSTANTS.WEAR_IP +", "+CONSTANTS.PHONE_IP);
                 }
 
 //                Log.d(TAG, "getFromServer|RECEIVED: "+ receivePacket.getAddress().getHostAddress());
