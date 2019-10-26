@@ -4,7 +4,7 @@ android {
 //    compileSdkVersion "Glass Development Kit Preview"
 //    compileSdkVersion "Glass Development Kit Preview:19"
     compileSdkVersion "Google Inc.:Glass Development Kit Preview:19"
-    buildToolsVersion '26.0.1'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "kr.ac.kaist.arrc.imustreamglass"
