@@ -5,6 +5,12 @@
     <string name="notification_title">IMUstreamService</string>
     <string name="notification_message">Start sending foreground service</string>
 
+    <string name="network_start">Connect</string>
+    <string name="network_on">Sending&#8230;</string>
+    <string name="write_start">Write File</string>
+    <string name="write_on">Writing&#8230;</string>
+    <string name="stop_all">Stop ALL</string>
+
     <string name="opt_wild">Start Wild collection</string>
     <string name="opt_connect">Send Stream(UDP)</string>
     <string name="opt_write">Write Stream(CSV)</string>

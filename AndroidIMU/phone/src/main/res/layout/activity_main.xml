@@ -8,12 +8,12 @@
     tools:context="kr.ac.kaist.arrc.imustreamphone.MainActivity">
 
     <TextView
-        android:id="@+id/tv1"
+        android:id="@+id/tv_target"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TargetIP"
 
-        app:layout_constraintBottom_toTopOf="@+id/tv2"
+        app:layout_constraintBottom_toTopOf="@+id/tv_deviceinfo"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -22,20 +22,67 @@
         app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <TextView
-        android:id="@+id/tv2"
+        android:id="@+id/tv_deviceinfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="MyIP"
         android:textStyle="bold"
 
-        app:layout_constraintTop_toBottomOf="@+id/tv1"
-        app:layout_constraintBottom_toTopOf="@+id/sync_layout"
+        app:layout_constraintTop_toBottomOf="@+id/tv_target"
+        app:layout_constraintBottom_toTopOf="@+id/starting_btn_layout"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
 
         app:layout_constraintRight_toRightOf="parent"
-         />
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/starting_btn_layout"
+        android:gravity="center"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_deviceinfo"
+        app:layout_constraintBottom_toTopOf="@+id/btn_stopall">
+        <Button
+            android:id="@+id/btn_startstop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/network_start" />
+        <Button
+            android:id="@+id/btn_write"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/write_start" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_stopall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stop_all"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/starting_btn_layout"
+        app:layout_constraintBottom_toTopOf="@+id/sync_layout"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+
+
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/sync_layout"
+        app:layout_constraintTop_toBottomOf="@id/btn_stopall" />
+
 
 
     <LinearLayout
@@ -43,13 +90,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/sync_layout"
 
+        android:layout_marginTop="20dp"
+
 
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@+id/tv2"
+        app:layout_constraintTop_toBottomOf="@+id/btn_stopall"
         app:layout_constraintBottom_toTopOf="@+id/device_info_txt"
         >
 

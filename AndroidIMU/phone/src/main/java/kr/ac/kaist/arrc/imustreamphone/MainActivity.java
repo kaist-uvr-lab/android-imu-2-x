@@ -2,15 +2,11 @@ package kr.ac.kaist.arrc.imustreamphone;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,7 +15,6 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -36,29 +31,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.text.SimpleDateFormat;
 
 
 import kr.ac.kaist.arrc.R;
@@ -67,7 +50,6 @@ import kr.ac.kaist.arrc.imustreamlib.SocketComm;
 import kr.ac.kaist.arrc.imustreamlib.ReturningValues;
 import kr.ac.kaist.arrc.imustreamlib.SendWriteService;
 import kr.ac.kaist.arrc.imustreamlib.SocketOnetimeSend;
-import kr.ac.kaist.arrc.imustreamlib.Utils;
 import kr.ac.kaist.arrc.imustreamlib.VibratorTool;
 import kr.ac.kaist.arrc.imustreamlib.network.NetUtils;
 
@@ -81,8 +63,8 @@ public class MainActivity extends AppCompatActivity  {
 
     private boolean EXP_TESTING = false;
     private SensorManager sensorManager;
-    private TextView tv1, tv2, device_info;
-    Button btn_sync;
+    private TextView tv_targetinfo, tv_myinfo, tv_incomingdevicesinfo;
+    private Button btn_startstop, btn_stopall, btn_write, btn_sync;
     private Menu main_menu;
 
     private String device_info_str = "";
@@ -124,8 +106,8 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-        tv1 = (TextView) findViewById(R.id.tv1);
-        tv1.setOnClickListener(new View.OnClickListener() {
+        tv_targetinfo = (TextView) findViewById(R.id.tv_target);
+        tv_targetinfo.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -137,11 +119,21 @@ public class MainActivity extends AppCompatActivity  {
 
 
             }});
-        tv2 = (TextView) findViewById(R.id.tv2);
+        tv_myinfo = (TextView) findViewById(R.id.tv_deviceinfo);
 
 
+        btn_startstop = (Button) findViewById(R.id.btn_startstop);
+        btn_startstop.setOnClickListener(btn1ClickListener);
+        btn_startstop.setOnLongClickListener(btn1LongClickListener);
+        vib_tool = new VibratorTool((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
+
+        btn_stopall = (Button) findViewById(R.id.btn_stopall);
+        btn_stopall.setOnClickListener(btnStopClickListener);
+        btn_stopall.setVisibility(View.GONE);
+
+        btn_write = (Button) findViewById(R.id.btn_write);
+        btn_write.setOnClickListener(btnWriteClickListener );
         btn_sync = (Button) findViewById(R.id.syncServer_btn);
-//        btn_sync.setOnClickListener(syncbtnClickListener);
         btn_sync.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -196,46 +188,10 @@ public class MainActivity extends AppCompatActivity  {
         wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF , "selfsync:PhoneWWiFilock");
         wifiLock.acquire();
 
-        device_info = (TextView) findViewById(R.id.device_info_txt);
+        tv_incomingdevicesinfo = (TextView) findViewById(R.id.device_info_txt);
 
 
 
-        // Get data from SendWriteService
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        int result = intent.getIntExtra(LAST_CLASSRESULT, -1);
-                        device_info_str = intent.getStringExtra(CONNECTION_INFO);
-
-                        // vibration noti for connection errors
-                        if(syncInfo==2 && device_info_str.contains("error")){
-                            if (disconnected) {
-                                // noti vibrate when error last for certain seconds(CONSTANTS.ERROR_NOTI_TIME)
-                                if (System.currentTimeMillis() - last_error_time > ERROR_NOTI_TIME) {
-                                    if(!EXP_TESTING)    VibratorTool.vibrateError();
-
-                                    // set last error time to make noti repeat every 3sec
-                                    last_error_time = (System.currentTimeMillis() - ERROR_NOTI_TIME) + CONSTANTS.ERROR_NOTI_REPEAT;
-                                }
-
-                            }else{
-                                disconnected = true;
-                                last_error_time = System.currentTimeMillis();
-                            }
-                        }
-                        else{
-                            // connection recovered
-                            disconnected = false;
-
-                            //reset last_error_time when connection recovered
-                            last_error_time = System.currentTimeMillis();
-                        }
-                        updateUI();
-
-                    }
-                }, new IntentFilter(SendWriteService.ACTION_CLASS)
-        );
 
 
         int PERMISSION_ALL = 1;
@@ -278,6 +234,122 @@ public class MainActivity extends AppCompatActivity  {
 
 
     }
+    Button.OnClickListener btn1ClickListener = new Button.OnClickListener() {
+        public void onClick(View arg0) {
+            if(!msgSending){
+                msgSending = true;
+                vib_tool.vibrateError();
+
+                startService();
+                updateUI();
+            }else{
+                Toast.makeText(getApplicationContext(), "LONG CLICK to STOP", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
+    // Long click to change IP address
+    Button.OnLongClickListener btn1LongClickListener = new Button.OnLongClickListener() {
+        public boolean onLongClick(View view) {
+
+            if (!msgSending) {
+                Toast.makeText(getApplicationContext(), "LONG CLICK", Toast.LENGTH_SHORT).show();
+
+                // Creating alert Dialog with one Button
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
+                //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+
+                // Setting Dialog Title
+                alertDialog.setTitle("Change IP address");
+
+                // Setting Dialog Message
+//            alertDialog.setMessage("Enter Correct IP");
+
+                final EditText input = new EditText(MainActivity.this);
+                input.setHint("xxx.xxx.xxx.xxx");
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input); // uncomment this line
+
+                // Setting Positive "Yes" Button
+                alertDialog.setPositiveButton("Confirm change",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                // Write your code here to execute after dialog
+                                String new_ip = input.getText().toString();
+
+                                CONSTANTS.IP_ADDRESS = new_ip;
+                                writeIPToPreference("modified_ip",new_ip);
+                                updateUI();
+                                Toast.makeText(getApplicationContext(),"YES:"+new_ip, Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                // Setting Negative "NO" Button
+                alertDialog.setNegativeButton("CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Write your code here to execute after dialog
+                                Toast.makeText(getApplicationContext(),"NO", Toast.LENGTH_SHORT).show();
+                                dialog.cancel();
+                            }
+                        });
+
+                // closed
+
+                // Showing Alert Message
+                ip_change_show = alertDialog.show();
+
+                SocketCommIP_get sock = new SocketCommIP_get();
+                sock.execute();
+
+            } else if (msgSending) {
+                msgSending = false;
+                msgWriting = false;
+
+//                startSendWriteService(); // 서비스 종료
+                stopService();
+                updateUI();
+                Toast.makeText(getApplicationContext(), "Service Terminated", Toast.LENGTH_SHORT).show();
+
+            }
+
+
+
+
+
+            return true;
+        }
+    };
+
+    Button.OnClickListener btnStopClickListener = new Button.OnClickListener() {
+        public void onClick(View arg0) {
+            msgSending = false;
+            msgWriting = false;
+
+            startService(); // 서비스 종료
+//            stopService(intent); // 서비스 종료
+            updateUI();
+
+
+        }
+    };
+
+    Button.OnClickListener btnWriteClickListener = new Button.OnClickListener() {
+        public void onClick(View arg0) {
+            if(!msgWriting){
+                msgWriting = true;
+            }
+            startService();
+            updateUI();
+
+            updateUI();
+
+        }
+    };
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -470,10 +542,10 @@ public class MainActivity extends AppCompatActivity  {
         }else if(stored_default_ip.equals(CONSTANTS.IP_ADDRESS)&&!stored_modified_ip.equals("TheDefaultValueIfNoValueFoundOfThisKey")){
             CONSTANTS.IP_ADDRESS = stored_modified_ip;
         }
-        tv1.setText(CONSTANTS.IP_ADDRESS+":"+CONSTANTS.PORT);
+        tv_targetinfo.setText(CONSTANTS.IP_ADDRESS+":"+CONSTANTS.PORT);
 
         NAME = NetUtils.getWifiName(getApplicationContext()) +"\n"+ NetUtils.getMACAddress("wlan0");
-        tv2.setText(NAME+"\n"+NetUtils.getIPAddress(true));
+        tv_myinfo.setText(NAME+"\n"+NetUtils.getIPAddress(true));
     }
 
     private void updateUI(){
@@ -487,13 +559,13 @@ public class MainActivity extends AppCompatActivity  {
                 s.setSpan(new ForegroundColorSpan(Color.rgb(50,200,50)), 0, s.length(), 0);
                 sending_menuItem.setTitle(s);
 
-                tv1.setTextColor(Color.rgb(50,150,50));
+                tv_targetinfo.setTextColor(Color.rgb(50,150,50));
 
             }else{
                 MenuItem sending_menuItem = main_menu.findItem(R.id.connect_opt);
                 sending_menuItem.setTitle("Connect(Start sending)");
 
-                tv1.setTextColor(Color.rgb(50,50,50));
+                tv_targetinfo.setTextColor(Color.rgb(50,50,50));
             }
 
             if (msgWriting) {
@@ -507,16 +579,33 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
 
+        if (msgSending) {
+            btn_startstop.setTextColor(Color.rgb(50,200,50));
+            btn_startstop.setText(R.string.network_on);
+        }else{
+            btn_startstop.setTextColor(Color.rgb(255,255,255));
+            btn_startstop.setText(R.string.network_start);
+        }
+
+
+        if (msgWriting) {
+            btn_write.setTextColor(Color.rgb(50,200,50));
+            btn_write.setText(R.string.write_on);
+        }else{
+            btn_write.setTextColor(Color.rgb(255,255,255));
+            btn_write.setText(R.string.write_start);
+        }
+
         if (syncInfo==2) {
             btn_sync.setTextColor(Color.rgb(50,200,50));
             btn_sync.setText("Receiving...");
 
-            device_info.setText(device_info_str);
+            tv_incomingdevicesinfo.setText(device_info_str);
         }else{
             btn_sync.setTextColor(Color.rgb(50,50,50));
             btn_sync.setText("Device Sync(Server)");
 
-            device_info.setText("");
+            tv_incomingdevicesinfo.setText("");
         }
 
     }

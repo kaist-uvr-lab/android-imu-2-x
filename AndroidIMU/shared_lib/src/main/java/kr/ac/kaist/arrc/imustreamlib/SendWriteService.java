@@ -398,7 +398,9 @@ public class SendWriteService extends Service implements SensorEventListener {
                 msgBuffer.putFloat(32, ROT_Z);
                 msgBuffer.putFloat(36, ROT_W);
 
-                msgBuffer.putLong(40, TIME);
+                // set Time to use sending time as reference
+                // TODO: need to include reference time of three sensors
+                msgBuffer.putLong(40, lastSensorTime);
                 msgBuffer.putInt(48, this_device_id);
                 try {
                     if (bufferQueue.remainingCapacity() < 1) {
