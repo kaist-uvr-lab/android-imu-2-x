@@ -8,12 +8,12 @@ Project is written with Android Studio, so it will be easier to import this fold
 There are several options which can set on CONSTANTS class in shared_lib. Can check details in the code with descriptions. 
 When you run this app, it shows current status on start screen. 
 
-First line is target IP and Port. \\
-Second line is current connected WiFi SSID. \\
-Third line is MAC address of current device. \\
-Fourth line is current device's IP. \\
+First line is target IP and Port.  
+Second line is current connected WiFi SSID.  
+Third line is MAC address of current device.  
+Fourth line is current device's IP.  
 
-Press CONNECT button to start stream.(You can change target IP and Port with long click before start sending.) Then long click CONNECT button to stop stream. \\
+Press CONNECT button to start stream.(You can change target IP and Port with long click before start sending.) Then long click CONNECT button to stop stream.  
 Press WRITE FILE button to wrtie sensor stream on phone.
 
 
