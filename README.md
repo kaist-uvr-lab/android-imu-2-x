@@ -3,7 +3,7 @@ This project includes android app which stream IMU data(Accelerometer, Gyroscope
 
 ## Instructions
 ### AndroidIMU
-Project is written with Android Studio, so it will be easier to import this folder as Project on Android Studio. Theere are three different modules inside Project. Three are seperate module for each device type: phone, watch, glass. Three module share common core code which is in 'shared_lib'.
+Project is written with Android Studio, so it will be easier to import this folder as Project on Android Studio. Theere are three different modules inside Project. Three are seperate module for each device type: phone, watch, glass. Three module share common core code which is in 'shared_lib'. Data stream part is working as ForegroundService to prevent closing on newer Android. Unfortunately, if app is crashed, there is no termination button on app. Please use task manager to kill app. It need several permissions to run, and those will show on first run.
 
 There are several options which can set on CONSTANTS class in shared_lib. Can check details in the code with descriptions. 
 When you run this app, it shows current status on start screen. 
