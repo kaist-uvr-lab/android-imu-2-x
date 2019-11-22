@@ -17,5 +17,8 @@ Press CONNECT button to start stream.(You can change target IP and Port with lon
 Press WRITE FILE button to wrtie sensor stream on phone.
 
 ### receiver_python
+imus_UDP is built as Thread. When it starts, it listen for data streamed to lietening Port and store numbers of frame(which is set as 'size').  
+If you run sensorUDp.py, you can see number of data incoming to see whether receiving owrks or not.
 
 ### receiver_unity
+UDPSendReceive.cs is built as Thread. When it starts, it listen for data streamed and print it. 
