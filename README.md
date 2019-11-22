@@ -1,7 +1,7 @@
 # android-imu-2-x
 This project includes android app which stream IMU data(Accelerometer, Gyroscope, Rotation Vector) through UDP socket and example code of receving IMU datastream in various platform.
 
-## Instructions
+## Descriptions
 ### AndroidIMU
 Project is written with Android Studio, so it will be easier to import this folder as Project on Android Studio. Theere are three different modules inside Project. Three are seperate module for each device type: phone, watch, glass. Three module share common core code which is in 'shared_lib'. Data stream part is working as ForegroundService to prevent closing on newer Android. Unfortunately, if app is crashed, there is no termination button on app. Please use task manager to kill app. It need several permissions to run, and those will show on first run.
 
