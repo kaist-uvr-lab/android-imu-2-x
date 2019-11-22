@@ -18,7 +18,7 @@ Press WRITE FILE button to wrtie sensor stream on phone.
 
 ### receiver_python
 imus_UDP is built as Thread. When it starts, it listen for data streamed to lietening Port and store numbers of frame(which is set as 'size').  
-If you run sensorUDp.py, you can see number of data incoming to see whether receiving works or not.
+If you run sensorUDp.py, you can see number of data incoming to see whether receiving works or not. (Becareful, if your devices is connected to local network, then both sending device nad receiving device should be in same network.)
 
 ### receiver_unity
 UDPSendReceive.cs is built as Thread. When it starts, it listen for data streamed and print it. 
