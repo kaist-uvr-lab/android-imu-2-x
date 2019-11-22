@@ -1,7 +1,7 @@
 # android-imu-2-x
 This project includes android app which stream IMU data(Accelerometer, Gyroscope, Rotation Vector) through UDP socket and example code of receving IMU datastream in various platform.
 
-## Instructions(How to use)
+## Instructions
 ### AndroidIMU
 Project is written with Android Studio, so it will be easier to import this folder as Project on Android Studio. Theere are three different modules inside Project. Three are seperate module for each device type: phone, watch, glass. Three module share common core code which is in 'shared_lib'.
 
@@ -15,10 +15,6 @@ Fourth line is current device's IP.
 
 Press CONNECT button to start stream.(You can change target IP and Port with long click before start sending.) Then long click CONNECT button to stop stream.  
 Press WRITE FILE button to wrtie sensor stream on phone.
-
-
-## Modules
-### AndroidIMU
 
 ### receiver_python
 
