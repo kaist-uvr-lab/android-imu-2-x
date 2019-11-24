@@ -19,7 +19,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-public class UDPSendReceive : MonoBehaviour {
+public class UDPSendReceiveThread : MonoBehaviour {
 
 	// receiving Thread
 	Thread receiveThread;
@@ -79,6 +79,7 @@ public class UDPSendReceive : MonoBehaviour {
             }
         }
         transform.Rotate(gyro, Space.Self);
+        // Debug.Log("UDPSendReceive: receiveThread background=" + receiveThread.IsBackground);
     }
 
     // OnDestroy
