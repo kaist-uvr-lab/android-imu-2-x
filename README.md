@@ -21,4 +21,4 @@ imus_UDP is built as Thread. When it starts, it listen for data streamed to liet
 If you run sensorUDp.py, you can see number of data incoming to see whether receiving works or not. (Becareful, if your devices is connected to local network, then both sending device nad receiving device should be in same network.)
 
 ### receiver_unity
-UDPSendReceive.cs is built as Thread. When it starts, it listen for data streamed and print it. 
+There are two different version which have identical function. The only difference is that one is using 'Thread' and the other is using 'Task'. It is more related on device's compatibility issue than others. Choose one and use. **Dont' use both, it will crash** For both, when it starts, it listen for data streamed and print it. 
