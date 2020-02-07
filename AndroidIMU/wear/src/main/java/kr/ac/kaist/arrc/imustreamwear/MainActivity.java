@@ -181,7 +181,7 @@ public class MainActivity extends WearableActivity {
             // Register Wifi manager
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            registerReceiver(new WifiReceiver(), intentFilter);
+            registerReceiver(new WifiReceiver(wifiManager), intentFilter);
         }
 
 

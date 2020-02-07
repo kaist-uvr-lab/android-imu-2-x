@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -52,6 +53,7 @@ import kr.ac.kaist.arrc.imustreamlib.SendWriteService;
 import kr.ac.kaist.arrc.imustreamlib.SocketOnetimeSend;
 import kr.ac.kaist.arrc.imustreamlib.VibratorTool;
 import kr.ac.kaist.arrc.imustreamlib.network.NetUtils;
+import kr.ac.kaist.arrc.imustreamlib.network.WifiReceiver;
 
 import static kr.ac.kaist.arrc.imustreamlib.CONSTANTS.ERROR_NOTI_TIME;
 import static kr.ac.kaist.arrc.imustreamlib.SendWriteService.CONNECTION_INFO;
@@ -213,15 +215,15 @@ public class MainActivity extends AppCompatActivity  {
         updateUI();
 
         turnOffDozeMode(getApplicationContext());
-/*
+
 
         // WiFi connection forcing part
         NetUtils.changeWifiToTargetNetwork(getApplicationContext());
         // Register Wifi manager
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(new WifiReceiver(), intentFilter);
-*/
+        registerReceiver(new WifiReceiver(wifiManager), intentFilter);
+
 
 
 
