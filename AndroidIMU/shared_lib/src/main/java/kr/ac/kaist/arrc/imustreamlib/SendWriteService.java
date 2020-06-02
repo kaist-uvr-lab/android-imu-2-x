@@ -68,6 +68,7 @@ public class SendWriteService extends Service implements SensorEventListener {
     private float ACC_X, ACC_Y, ACC_Z;
     private float GYRO_X, GYRO_Y, GYRO_Z;
     private float ROT_X, ROT_Y, ROT_Z, ROT_W;
+    private float MAG_X, MAG_Y, MAG_Z;
     private long TIME;
 
 
@@ -145,12 +146,15 @@ public class SendWriteService extends Service implements SensorEventListener {
 //        sensorManager.registerListener(this,
 //                sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
 //                CONSTANTS.SENSOR_DELAY);
-//        sensorManager.registerListener(this,
-//                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
-//                CONSTANTS.SENSOR_DELAY);
         sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR),
+                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
                 CONSTANTS.SENSOR_DELAY);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                CONSTANTS.SENSOR_DELAY);
+//        sensorManager.registerListener(this,
+//                sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR),
+//                CONSTANTS.SENSOR_DELAY);
         // store float values as byte array
         msgBuffer = ByteBuffer.allocate(CONSTANTS.BYTE_SIZE);
         bufferQueue = new ArrayBlockingQueue(CONSTANTS.QUEUE_SIZE);
@@ -373,6 +377,11 @@ public class SendWriteService extends Service implements SensorEventListener {
             ROT_Y = event.values[1];
             ROT_Z = event.values[2];
             ROT_W = event.values[3];
+        }else if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD
+                || event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED){
+            MAG_X = event.values[0];
+            MAG_Y = event.values[1];
+            MAG_Z = event.values[2];
         }
 
 
@@ -402,6 +411,10 @@ public class SendWriteService extends Service implements SensorEventListener {
                 // TODO: need to include reference time of three sensors
                 msgBuffer.putLong(40, lastSensorTime);
                 msgBuffer.putInt(48, this_device_id);
+
+                msgBuffer.putFloat(52, MAG_X);
+                msgBuffer.putFloat(56, MAG_Y);
+                msgBuffer.putFloat(60, MAG_Z);
                 try {
                     if (bufferQueue.remainingCapacity() < 1) {
                         bufferQueue.take();
@@ -410,14 +423,25 @@ public class SendWriteService extends Service implements SensorEventListener {
                 } catch (InterruptedException ex) {
                     Log.d(TAG, "Error on put sensor values");
                 }
+
+//                String testing = df.format(GYRO_X)+", "+df.format(GYRO_Y)+", "+df.format(GYRO_Z)+", "
+//                        + df.format(ACC_X)+", "+df.format(ACC_Y)+", "+df.format(ACC_Z)+", "
+//                        + df.format(ROT_X)+", "+df.format(ROT_Y)+", "+df.format(ROT_Z)+", "+df.format(ROT_W)+", "
+//                        + TIME + "," +
+//                        this_device_id + "," +
+//                        df.format(MAG_X)+", "+df.format(MAG_Y)+", "+df.format(MAG_Z);
+//                Log.d("testing", testing);
             }
+
 
             // WRITING
             if(msgWriting){
                 gyroData.add(   df.format(GYRO_X)+", "+df.format(GYRO_Y)+", "+df.format(GYRO_Z)+", "
                         + df.format(ACC_X)+", "+df.format(ACC_Y)+", "+df.format(ACC_Z)+", "
                         + df.format(ROT_X)+", "+df.format(ROT_Y)+", "+df.format(ROT_Z)+", "+df.format(ROT_W)+", "
-                        + TIME);
+                        + TIME + "," +
+                        this_device_id + "," +
+                        df.format(MAG_X)+", "+df.format(MAG_Y)+", "+df.format(MAG_Z));
 
             }
         }

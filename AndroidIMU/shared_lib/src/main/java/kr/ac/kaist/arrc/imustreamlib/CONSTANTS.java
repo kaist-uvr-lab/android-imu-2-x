@@ -10,8 +10,8 @@ public class CONSTANTS {
     // should put Phone(leg)'s hotspot ssid and passwd
     // ***IMPORTANT***CANNOT CHANGE ON APP
     public static boolean FORCE_WIFI = false;
-    public static String SSID = "ssid";
-    public static String PASSWD = "xxxxxx";
+    public static String SSID = "nerf-this";
+    public static String PASSWD = "dvasong1212";
 
 
 
@@ -31,10 +31,12 @@ public class CONSTANTS {
     public static int SS_W_SIZE = 1000;
 
     // port for sensor data stream
-    public static int PORT = 12562;
+//    public static int PORT = 12562;
+    public static int PORT = 12563;
 
     // port for Glass noti sharing
     public static int DATA_PORT = 11563;
+//    public static int DATA_BYTE_SIZE = 48;
     public static int DATA_BYTE_SIZE = 48;
 
     /**
@@ -42,7 +44,7 @@ public class CONSTANTS {
      **/
 
     //sensor delay for SensorManager in mssec
-    public static int SENSOR_DELAY = 8;
+    public static int SENSOR_DELAY = 18;
 
 
     /**
@@ -50,14 +52,14 @@ public class CONSTANTS {
      * - Sensor manager doesn't give correct interval
      **/
 //    public static final int SENDING_INTERVAL = 50; //50Hz
-    public static int SENDING_INTERVAL = 20;
+    public static int SENDING_INTERVAL = 10;
 //    public static int SENDING_INTERVAL = SENSOR_DELAY - 1;    //100Hz
     public static int SENDING_INTERVAL_HALF = SENDING_INTERVAL / 2;    // for thread sleep in UDP socket part
 
     // variable to share with sending part
-    // Gyro    Acc,   Rotvec  Millis  ID
-    // 4,4,4, 4,4,4, 4,4,4,4,   8,    4
-    public static int BYTE_SIZE = 52;
+    // Gyro    Acc,   Rotvec  Millis  ID  MAG
+    // 4,4,4, 4,4,4, 4,4,4,4,   8,    4, 4,4,4
+    public static int BYTE_SIZE = 64;
     public static int QUEUE_SIZE = 30;
 
     public static void setSensorDelay(int delay) {

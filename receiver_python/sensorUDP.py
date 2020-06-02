@@ -45,7 +45,7 @@ class imus_UDP(threading.Thread):
         self.POSE = 0
         
         # ServerTime, Gx, Gy, Gz, Ax, Ay, Az, Rx, Ry, Rz, Rw, DeviceTime
-        self.dataFormat = 'qffffffffff'
+        self.dataFormat = 'ffffqffffffffff'
         self.numData = len(self.dataFormat)+1
                 
         self.delay_ms = {}
@@ -113,7 +113,7 @@ class imus_UDP(threading.Thread):
             print("file_created: "+self.file_prefix+self.participant_name+"_"+new_id+".csv")
             if not new_id == "127.0.0.1":
                 self.datas[new_id] = np.empty((self.w_size, self.numData))
-                self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,ROTx,ROTy,ROTz,ROTw,DeviceTime\n")
+                self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,ROTx,ROTy,ROTz,ROTw,DeviceTime,DeviceID,MagX,MagY,MagZ\n")
 
             self.delay_ms[new_id] = 0
             self.refresh_hz[new_id] = 0
@@ -131,7 +131,7 @@ class imus_UDP(threading.Thread):
                 self.online_save_file[one_key] = open(self.file_prefix+self.participant_name+"_"+one_key+".csv","w") 
                 if not one_key == "127.0.0.1":
                     self.datas[one_key] = np.empty((self.w_size, self.numData))
-                    self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,Rx,Ry,Rz,Rw,DeviceTime\n")
+                    self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,Rx,Ry,Rz,Rw,DeviceTime,DeviceID,MagX,MagY,MagZ\n")
 
                 self.delay_ms[new_id] = 0
                 self.refresh_hz[new_id] = 0
@@ -194,7 +194,7 @@ class imus_UDP(threading.Thread):
                     DATA_NUM = struct.unpack("i", swap_data[-4:])[0]
                     
                     for i in range(DATA_NUM):
-                        this_data = swap_data[-(52*(i+1)):-(52*i+4)]
+                        this_data = swap_data[-(64*(i+1)+4):-(64*i+4)]
                         float_list = struct.unpack(self.dataFormat, this_data)
                         
                         float_arr = np.array(float_list+(current_milli_time(),))
@@ -241,7 +241,7 @@ class imus_UDP(threading.Thread):
         print("imus_UDP Socket closed")
                                     
 if __name__ == "__main__":
-    imu_get = imus_UDP()
+    imu_get = imus_UDP(Port=12563)
     imu_get.setConnection()
     imu_get.start()
     
