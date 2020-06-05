@@ -10,8 +10,8 @@ public class CONSTANTS {
     // should put Phone(leg)'s hotspot ssid and passwd
     // ***IMPORTANT***CANNOT CHANGE ON APP
     public static boolean FORCE_WIFI = false;
-    public static String SSID = "nerf-this";
-    public static String PASSWD = "dvasong1212";
+    public static String SSID = "ssid";
+    public static String PASSWD = "passwd";
 
 
 
