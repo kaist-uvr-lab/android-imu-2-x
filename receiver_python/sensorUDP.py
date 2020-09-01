@@ -44,8 +44,8 @@ class imus_UDP(threading.Thread):
         self.INPUT_EVENT_TYPE = -1
         self.POSE = 0
         
-        # ServerTime, Gx, Gy, Gz, Ax, Ay, Az, Rx, Ry, Rz, Rw, DeviceTime
-        self.dataFormat = 'ffffqffffffffff'
+        self.dataFormat = 'ffffqffffffffff' #reverse
+        self.data_column_name = "Gx,Gy,Gz,Ax,Ay,Az,ROTx,ROTy,ROTz,ROTw,DeviceTime,DeviceID,MagX,MagY,MagZ" 
         self.numData = len(self.dataFormat)+1
                 
         self.delay_ms = {}
@@ -113,7 +113,7 @@ class imus_UDP(threading.Thread):
             print("file_created: "+self.file_prefix+self.participant_name+"_"+new_id+".csv")
             if not new_id == "127.0.0.1":
                 self.datas[new_id] = np.empty((self.w_size, self.numData))
-                self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,ROTx,ROTy,ROTz,ROTw,DeviceTime,DeviceID,MagX,MagY,MagZ\n")
+                self.online_save_file[new_id].write("ServerTime"+self.data_column_name+"\n")
 
             self.delay_ms[new_id] = 0
             self.refresh_hz[new_id] = 0
@@ -131,7 +131,7 @@ class imus_UDP(threading.Thread):
                 self.online_save_file[one_key] = open(self.file_prefix+self.participant_name+"_"+one_key+".csv","w") 
                 if not one_key == "127.0.0.1":
                     self.datas[one_key] = np.empty((self.w_size, self.numData))
-                    self.online_save_file[new_id].write("ServerTime,Gx,Gy,Gz,Ax,Ay,Az,Rx,Ry,Rz,Rw,DeviceTime,DeviceID,MagX,MagY,MagZ\n")
+                    self.online_save_file[new_id].write("ServerTime"+self.data_column_name+"\n")
 
                 self.delay_ms[new_id] = 0
                 self.refresh_hz[new_id] = 0
