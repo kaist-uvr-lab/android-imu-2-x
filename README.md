@@ -22,3 +22,6 @@ If you run sensorUDp.py, you can see number of data incoming to see whether rece
 
 ### receiver_unity
 There are two different version which have identical function. The only difference is that one is using 'Thread' and the other is using 'Task'. It is more related on device's compatibility issue than others. Choose one and use. **Dont' use both, it will crash** For both, when it starts, it listen for data streamed and print it. 
+
+## Acknowledgment
+This work was supported by Institute of Information & communications Technology Planning & Evaluation (IITP) grant funded by the Korea government(MSIT) (No.2019-0-01270, WISE AR UI/UX Platform Development for Smartglasses)
