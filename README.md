@@ -15,6 +15,8 @@ Fourth line is current device's IP.
 
 Press CONNECT button to start stream.(You can change target IP and Port with long click before start sending.) Then long click CONNECT button to stop stream.  
 Press WRITE FILE button to wrtie sensor stream on phone.
+### GlassEE2
+"is under sonctruction now"
 
 ### receiver_python
 imus_UDP is built as Thread. When it starts, it listen for data streamed to lietening Port and store numbers of frame(which is set as 'size').  
