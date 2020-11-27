@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.MediaStore;
@@ -55,6 +56,8 @@ public class MainActivity extends Activity {
 
     PowerManager powerManager;
     PowerManager.WakeLock wakeLock;
+    WifiManager wifiManager;
+    WifiManager.WifiLock wifiLock;
 
     private Boolean msgSending = false;
     private Boolean msgWriting = false;
@@ -89,14 +92,6 @@ public class MainActivity extends Activity {
         Log.d(TAG, "updateMyStatus|Stored:"+stored_default_ip+", Modified:"+stored_modified_ip);
 
 
-        // WiFi connection forcing part
-        NetUtils.changeWifiToTargetNetwork(getApplicationContext());
-        // Disable BT
-        NetUtils.disableBluetooth();
-        // Register Wifi manager
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(new WifiReceiver(), intentFilter);
 
 
 
@@ -227,6 +222,22 @@ public class MainActivity extends Activity {
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,
                 "selfsync:GlassWakelock");
         wakeLock.acquire();
+
+        //wakelock for prevent WiFi shutdown
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF , "selfsync:PhoneWWiFilock");
+        wifiLock.acquire();
+
+        // WiFi connection forcing part
+        NetUtils.changeWifiToTargetNetwork(getApplicationContext());
+        // Disable BT
+        NetUtils.disableBluetooth();
+        // Register Wifi manager
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(new WifiReceiver(wifiManager), intentFilter);
+
+
         readSettings();
 
     }
@@ -256,6 +267,7 @@ public class MainActivity extends Activity {
         writeIPToPreference("modified_ip", CONSTANTS.IP_ADDRESS);
 
         wakeLock.release();
+        wifiLock.release();
         super.onDestroy();
     }
 
